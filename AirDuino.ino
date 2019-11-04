@@ -1,7 +1,10 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#define led_pin D0
 
 WiFiServer server(80);
+
+
 
 bool res_status = false;
 
@@ -49,6 +52,7 @@ bool send_get(WiFiClient cl, String msq_GET) {
 
     } else {
       Serial.println("connection failed - Nodejs");
+      blink();
       return false;
     }
 
@@ -72,7 +76,21 @@ bool read_mq135(WiFiClient cl) {
   return res_status;
 }
 
+
+void blink() {
+  for (int i = 0; i < 10; ++i)
+  {
+    digitalWrite(led_pin, HIGH);
+    delay(250);
+    digitalWrite(led_pin, LOW);
+    delay(250);
+  }
+  digitalWrite(led_pin, LOW);
+}
+
 void setup() {
+  pinMode(led_pin, OUTPUT);
+  digitalWrite(led_pin, LOW);
   Serial.begin(115200);
   
   // Connect to WiFi network
@@ -83,11 +101,13 @@ void setup() {
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
+    digitalWrite(led_pin, HIGH);
     delay(500);
     Serial.print(".");
   }
   Serial.println("");
   Serial.println("WiFi connected");
+  digitalWrite(led_pin, LOW);
 
   // Start the server
   server.begin();
