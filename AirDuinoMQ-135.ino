@@ -2,7 +2,7 @@
 #include <ESP8266HTTPClient.h>
 #define led_pin D0
 
-String ID = "PDV-MQ135";
+String ID = " -MQ135";
 
 WiFiServer server(80);
 
