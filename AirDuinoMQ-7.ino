@@ -73,7 +73,7 @@ bool read_mq7(WiFiClient cl){
   double CO = 233.9*pow(mq7_resistencia/5463, -1.40);                   //Calculate the concentration of CO
   String mq7_umbral = "false";
 
-  res_status = send_get(cl, String("saveDataMQ7?ID") + ID + "&CO=" + CO);
+  res_status = send_get(cl, String("saveDataMQ7?ID=") + ID + "&CO=" + CO);
 
   return res_status;
 }
