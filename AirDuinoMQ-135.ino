@@ -2,6 +2,8 @@
 #include <ESP8266HTTPClient.h>
 #define led_pin D0
 
+String ID = "PDV-MQ135";
+
 WiFiServer server(80);
 
 bool res_status = false;
@@ -73,7 +75,7 @@ bool read_mq135(WiFiClient cl) {
   double NH3 = 161.7 * pow(mq135_resistencia / 5463, -2.26);                     //Calculate the concentration of NH3
   String mq135_umbral = "false";
 
-  res_status = send_get(cl, String("saveData?CO2=") + CO2 + "&NH3=" + NH3 + "&NO=" + NO);
+  res_status = send_get(cl, String("saveData?ID=") + ID + "&CO2=" + CO2 + "&NH3=" + NH3 + "&NO=" + NO);
 
   return res_status;
 }
