@@ -4,9 +4,9 @@
 
 WiFiServer server(80);
 
-
-
 bool res_status = false;
+
+//Network data to connect arduino to Node.js
 
 const char* ssid = "";                    //Wifi SSID
 const char* password = "";                //Wifi password
@@ -14,6 +14,8 @@ const char* password = "";                //Wifi password
 const char* nodejs_ip = "";               //Node.js server IP
 const int nodejs_port = 8000;             //Node.js server PORT
 
+
+//This function is to make a GET request to send data to Node.js
 bool send_get(WiFiClient cl, String msq_GET) {
 
   if (msq_GET != "") {
@@ -60,13 +62,13 @@ bool send_get(WiFiClient cl, String msq_GET) {
 
 }
 
-
+//This function 
 bool read_mq135(WiFiClient cl) {
 
   int mq135_adc = analogRead(A0);                                                //Read the analog output of the MQ
   float mq135_voltaje = mq135_adc * (5.0 / 1023.0);                              //Convert the reading into a voltage value
   float mq135_resistencia = 1000 * ((5 - mq135_voltaje) / mq135_voltaje);        //Calculate Rs with an RL of 1k
-  double CO2 = 245 * pow(mq135_resistencia / 5463, -2.26);                       //Calculate the concentration of co2
+  double CO2 = 245 * pow(mq135_resistencia / 5463, -2.26);                       //Calculate the concentration of CO2
   double NO = 132.6 * pow(mq135_resistencia / 5463, -2.74);                      //Calculate the concentration of NO
   double NH3 = 161.7 * pow(mq135_resistencia / 5463, -2.26);                     //Calculate the concentration of NH3
   String mq135_umbral = "false";
