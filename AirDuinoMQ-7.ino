@@ -2,29 +2,28 @@
 #include <ESP8266HTTPClient.h>
 #define led_pin D0
 
+String ID = " -MQ7";
+
 WiFiServer server(80);
 
 bool res_status = false;
 
 //Network data to connect arduino to Node.js
 
-//const char* ssid = "";                    //Wifi SSID
-//const char* password = "";                //Wifi password
-
-const char* ssid = "MiCasa";
-const char* password = "2507VeGaMoLiNa142317309_FYFJR.";
+const char* ssid = "";                    //Wifi SSID
+const char* password = "";                //Wifi password
 
 const char* nodejs_ip = "";               //Node.js server IP
 const int nodejs_port = 8000;             //Node.js server PORT
 
 
 //This function is to make a GET request to send data to Node.js
-bool send_get(WiFiClient cl, String msq_GET){
+bool send_get(WiFiClient cl, String msq_GET) {
   
-  if(msq_GET != ""){
+  if (msq_GET != "") {
     String ip = "";
 
-   if(cl.connect(nodejs_ip, nodejs_port)) {
+    if (cl.connect(nodejs_ip, nodejs_port)) {
       
       Serial.println("connected to Nodejs");
       
@@ -38,9 +37,9 @@ bool send_get(WiFiClient cl, String msq_GET){
 
       HTTPClient http;
       http.begin("http://" + (String)nodejs_ip + "/" + (String)msq_GET);
-        http.setAuthorization("user", "password");
-        http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        http.POST("title=foo&body=bar&userId=1");
+      http.setAuthorization("user", "password");
+      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      http.POST("title=foo&body=bar&userId=1");
       http.addHeader("Content-Type", "text/plain");
       int httpCode = http.GET();                  //Send the request
       String payload = http.getString();          //Get the response payload
@@ -74,7 +73,7 @@ bool read_mq7(WiFiClient cl){
   double CO = 233.9*pow(mq7_resistencia/5463, -1.40);                   //Calculate the concentration of CO
   String mq7_umbral = "false";
 
-  res_status = send_get(cl, String("saveData?CO=") + CO);
+  res_status = send_get(cl, String("saveDataMQ7?ID") + ID + "&CO=" + CO);
 
   return res_status;
 }
