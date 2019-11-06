@@ -43,8 +43,7 @@ bool send_get(WiFiClient cl, String msq_GET) {
       http.addHeader("Content-Type", "text/plain");
       int httpCode = http.GET();                  //Send the request
       String payload = http.getString();          //Get the response payload
-      Serial.println(httpCode);                   //Print HTTP return code
-      Serial.println(payload);                    //Print request response payload
+      Serial.println("Data updated correctly");                   //Print HTTP return code
       http.end();
 
       if(httpCode == 200){
