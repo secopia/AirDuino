@@ -2,6 +2,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
+#include <SoftwareSerial.h>//incluimos SoftwareSerial
+#include <TinyGPS.h>//incluimos TinyGPS
+
+TinyGPS gps;//Declaramos el objeto gps
+SoftwareSerial serialgps(D1,D8);//Declaramos el pin 4 Tx y 3 Rx
 
 // Import lcd library
 #include <LiquidCrystal.h>
@@ -10,13 +15,15 @@ const int rs = D2, en = D3, d4 = D4, d5 = D5, d6 = D6, d7 = D7;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 // WiFi parameters
-const char* ssid = " ";
-const char* password = " ";
+const char* ssid = "";
+const char* password = "";
 
-int btn = D1, v = 0, ov = 0;
+int btn = D0, v = 0, ov = 0;
+
+//Declaramos la variables para la obtención de datos
 
 
-String data() {
+String mqdata() {
 
   int mq135_adc = analogRead(A0);                                                //Read the analog output of the MQ
   float mq135_voltaje = mq135_adc * (5.0 / 1023.0);                              //Convert the reading into a voltage value
@@ -28,10 +35,8 @@ String data() {
 
 
   String datos = "CO2=" + String(CO2) + "&NH3=" + String(NH3) + "&NO=" + String(NO);
-
   return datos;
 }
-
 
 String datos() {
 
@@ -43,18 +48,68 @@ String datos() {
   double NO = 132.6 * pow(mq135_resistencia / 5463, -2.74);                      //Calculate the concentration of NO
   String mq135_umbral = "false";
 
-
   String datos = "CO2=" + String(CO2) + " NO=" + String(NO);
 
   return datos;
 }
 
 
+String gpsdata(){
+  bool newData = false;
+  for (unsigned long start = millis(); millis() - start < 500;)
+  {
+    while (serialgps.available())
+    {
+      char c = serialgps.read();
+      if (gps.encode(c))
+        newData = true;
+    }
+  }
+
+  if (newData)
+  {
+    float latitude, longitude;
+    gps.f_get_position(&latitude, &longitude);
+    String datosgps = "&LA=" + String(latitude,5) + "&LO=" + String(longitude,5);
+    return datosgps;
+  }  
+}
+
+
+String gpsdatos(){
+  bool newData = false;
+  for (unsigned long start = millis(); millis() - start < 500;)
+  {
+    while (serialgps.available())
+    {
+      char c = serialgps.read();
+      if (gps.encode(c))
+        newData = true;
+    }
+  }
+
+  if (newData)
+  {
+    float latitude, longitude;
+    gps.f_get_position(&latitude, &longitude);
+    String datosgps = "LA=" + String(latitude,2) + " LO=" + String(longitude,2);
+    return datosgps;
+  }  
+}
+
+
+String data() {
+  String datos = mqdata() + gpsdata();
+  return datos;
+}
+
+
+
 void sData(){
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    http.begin("http:// " + data());
+    http.begin("" + data());
     int httpCode = http.GET();
     Serial.println("Sending GET!");
     lcd.setCursor(0,1);
@@ -85,6 +140,7 @@ void sData(){
 
 void setup() {
   Serial.begin(115200);
+  serialgps.begin(9600);
   lcd.begin(16, 2);
   lcd.setCursor(0,0);
   lcd.print("Connecting WiFi:");
@@ -99,21 +155,27 @@ void setup() {
     delay(1000);
     Serial.print(".");
   }
+  Serial.print("Connected!");
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Connected!");
+  delay(500);
+  lcd.clear();
 }
 
 
-void loop() {
+void loop() 
+{
   lcd.setCursor(0,0);
   lcd.print(datos());
   lcd.setCursor(0,1);
-  lcd.print("Ready to send!");
+  lcd.print(gpsdatos());
   v = digitalRead(btn);
   if ((v == HIGH) && (ov == LOW)){
-      sData();
-      delay(1000);
-      lcd.clear();
+    sData();
+    delay(500);
+    lcd.clear();
   }
-
   ov = v;
   delay(100);
 }
