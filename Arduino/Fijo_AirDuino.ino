@@ -3,7 +3,6 @@
 #include <ESP8266HTTPClient.h>
 
 //For the SDS011 Particulate Matter sensor
-
 #include <SoftwareSerial.h>
 SoftwareSerial SDS_Serial(D1, D2);
 unsigned int Pm25 = 0;
@@ -11,7 +10,7 @@ unsigned int Pm10 = 0;
 
 
 // WiFi parameters
-/const char* ssid = " ";                    //Wifi SSID
+/const char* ssid = " ";                //Wifi SSID
 /const char* password = " ";            //Wifi password
 
 
@@ -86,13 +85,13 @@ void setup() {
     delay(1000);
     Serial.print(".");
   }
+  delay(7200000);    //Time to preheat sensors
 }
 
 void loop() {
-
   if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
     HTTPClient http;
-    http.begin("http://" <-- Add here the url + data()); //Specify request destination
+    http.begin("http://" /** <-- Add here the url**/ + data()); //Specify request destination
     int httpCode = http.GET();            //Send the request
     Serial.println("Sending GET!");
     if (httpCode > 0) { //Check the returning code
