@@ -72,7 +72,10 @@ String gpsdata(){
     gps.f_get_position(&latitude, &longitude);
     String datosgps = "&LA=" + String(latitude,5) + "&LO=" + String(longitude,5);
     return datosgps;
-  }  
+  }  else {
+    String datosgps = "&LA=x&LO=x";
+    return datosgps;
+  }
 }
 
 
@@ -109,7 +112,7 @@ void sData(){
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    http.begin("" + data());
+    http.begin("http:// /** Añadir aqui URL del NodeJS **/ " + data());
     int httpCode = http.GET();
     Serial.println("Sending GET!");
     lcd.setCursor(0,1);
