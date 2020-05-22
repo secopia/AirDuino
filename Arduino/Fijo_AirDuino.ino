@@ -91,7 +91,7 @@ void setup() {
 void loop() {
   if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
     HTTPClient http;
-    http.begin("http://" /** <-- Add here the url**/ + data()); //Specify request destination
+    http.begin("http:// /** <-- Add here the url**/ " + data()); //Specify request destination
     int httpCode = http.GET();            //Send the request
     Serial.println("Sending GET!");
     if (httpCode > 0) { //Check the returning code
