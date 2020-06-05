@@ -15,11 +15,9 @@ const int rs = D2, en = D3, d4 = D4, d5 = D5, d6 = D6, d7 = D7;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 // WiFi parameters
-const char* ssid = "MiCasa";
-const char* password = "2507VeGaMoLiNa142317309_FYFJR.";
 
-// const char* ssid = "Andared";
-// const char* password = "llevalatararaunvestidoblancollenodecascabeles";
+const char* ssid = "";
+const char* password = "";
 
 int btn = D0, v = 0, ov = 0;
 
@@ -115,7 +113,7 @@ void sData(){
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    http.begin("http://airqualitypdv.herokuapp.com/inserts/p?" + data());
+    http.begin("" + data());
     int httpCode = http.GET();
     Serial.println("Sending GET!");
     lcd.setCursor(0,1);
