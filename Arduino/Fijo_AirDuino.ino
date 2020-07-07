@@ -55,7 +55,7 @@ String data() {
   int mq135_adc = analogRead(A0);                                                //Read the analog output of the MQ
   float mq135_voltaje = mq135_adc * (5.0 / 1023.0);                              //Convert the reading into a voltage value
   float mq135_resistencia = 1000 * ((5 - mq135_voltaje) / mq135_voltaje);        //Calculate Rs with an RL of 1k
-  double CO2 = 245 * pow(mq135_resistencia / 5463, -2.26);                       //Calculate the concentration of CO2
+  double CO2 = 0.0018 * 180 * pow(mq135_resistencia / 5163, -1.04);              //Calculate the concentration of CO2
   double NO = 132.6 * pow(mq135_resistencia / 5463, -2.74);                      //Calculate the concentration of NO
   double NH3 = 161.7 * pow(mq135_resistencia / 5463, -2.26);                     //Calculate the concentration of NH3
   String mq135_umbral = "false";
